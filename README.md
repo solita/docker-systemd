@@ -1,6 +1,10 @@
-# solita/ubuntu-systemd:16.04
+# solita/ubuntu-systemd
 
-A Docker image based on `ubuntu:16.04` that runs `systemd` with a minimal set of services.
+A Docker image based on `ubuntu` that runs `systemd` with a minimal set of services.
+
+## Supported tags
+
+* `latest`, `16.04`
 
 ## But why?
 
