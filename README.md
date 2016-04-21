@@ -8,7 +8,7 @@ A Docker image based on `ubuntu` that runs `systemd` with a minimal set of servi
 
 ## But why?
 
-The short answer: use `solita/ubuntu-systemd` for running applications that need to be run in a full Ubuntu system and not on their own in a container.
+The short answer: use `solita/ubuntu-systemd` for running applications that need to be run in a full Ubuntu system and not on their own as pid 1.
 
 The long answer: `solita/ubuntu-systemd` might be a better choice than the stock `ubuntu` image if one of the following is true:
 
