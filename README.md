@@ -18,7 +18,7 @@ If you just want to run a single, short-lived, process in a container, you shoul
 
 ## Building
 
-    docker build -t solita/ubuntu-systemd .
+    docker build -t solita/ubuntu-systemd:16.04 .
 
 ## Running
 
