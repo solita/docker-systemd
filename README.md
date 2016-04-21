@@ -16,10 +16,6 @@ The long answer: `solita/ubuntu-systemd` might be a better choice than the stock
 
 If you just want to run a single, short-lived, process in a container, you should probably use the stock `ubuntu` image instead.
 
-## Building
-
-    docker build -t solita/ubuntu-systemd:16.04 .
-
 ## Running
 
 You need to add a couple of flags to the `docker run` command to make `systemd` play nice with Docker:
