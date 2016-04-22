@@ -24,7 +24,7 @@ If you just want to run a single, short-lived, process in a container, you shoul
 
 You need to add a couple of flags to the `docker run` command to make `systemd` play nice with Docker:
 
-    docker run --stop-signal=SIGRTMIN+3 --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro YOUR_IMAGE
+    docker run --stop-signal=SIGRTMIN+3 --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro YOUR_IMAGE
 
 ## License
 
