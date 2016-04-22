@@ -1,16 +1,16 @@
-# solita/ubuntu-systemd
+# solita/centos-systemd
 
-A Docker image based on `ubuntu` that runs `systemd` with a minimal set of services.
+A Docker image based on `centos` that runs `systemd` with a minimal set of services.
 
 ## Supported tags
 
-* `latest`, `16.04`
+* `latest`, `7`
 
 ## But why?
 
-The short answer: use `solita/ubuntu-systemd` for running applications that need to be run in a full Ubuntu system and not on their own as PID 1.
+The short answer: use `solita/centos-systemd` for running applications that need to be run in a full CentOS system and not on their own as PID 1.
 
-The long answer: `solita/ubuntu-systemd` might be a better choice than the stock `ubuntu` image if one of the following is true:
+The long answer: `solita/centos-systemd` might be a better choice than the stock `centos` image if one of the following is true:
 
 - You want to test a provisioning or deployment script that configures and starts `systemd` services.
 
@@ -18,7 +18,7 @@ The long answer: `solita/ubuntu-systemd` might be a better choice than the stock
 
 - You want to solve the [the PID 1 zombie reaping problem](https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/).
 
-If you just want to run a single, short-lived, process in a container, you should probably use the stock `ubuntu` image instead.
+If you just want to run a single, short-lived, process in a container, you should probably use the stock `centos` image instead.
 
 ## Running
 

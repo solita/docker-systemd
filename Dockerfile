@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM centos:7
 
 ENV container docker
 
