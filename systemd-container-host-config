@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -e
+
+if [ -n "${DOCKER_MACHINE_NAME:+1}" ]; then
+  echo "Docker Machine detected, copying the script over to machine '$DOCKER_MACHINE_NAME' and running there."
+  docker-machine scp "$0" "$DOCKER_MACHINE_NAME:/tmp/systemd-container-host-config"
+  docker-machine ssh "$DOCKER_MACHINE_NAME" '/tmp/systemd-container-host-config'
+else
+  if mount | grep /sys/fs/cgroup/systemd >/dev/null 2>&1; then
+    echo 'The systemd cgroup is already mounted at /sys/fs/cgroup/systemd.'
+  else
+    if [ -d /sys/fs/cgroup/systemd ]; then
+      echo 'The mount point for the systemd cgroup already exists at /sys/fs/cgroup/systemd.'
+    else
+      echo 'Creating the mount point for the systemd cgroup at /sys/fs/cgroup/systemd.'
+      sudo mkdir -p /sys/fs/cgroup/systemd
+    fi
+
+    echo 'Mounting the systemd cgroup.'
+    sudo mount -t cgroup cgroup -o none,name=systemd /sys/fs/cgroup/systemd
+  fi
+
+  if uname -r | grep boot2docker >/dev/null 2>&1; then
+    echo 'boot2docker detected.'
+    if grep systemd-container-host-config /var/lib/boot2docker/bootlocal.sh >/dev/null 2>&1; then
+      echo 'systemd-container-host-config already added to /var/lib/boot2docker/bootlocal.sh'
+    else
+      echo 'Adding systemd-container-host-config to /var/lib/boot2docker/bootlocal.sh'
+      sudo cp /tmp/systemd-container-host-config /var/lib/boot2docker/
+      echo /var/lib/boot2docker/systemd-container-host-config | sudo tee -a /var/lib/boot2docker/bootlocal.sh >/dev/null
+    fi
+  fi
+  echo 'Your Docker host is now configured for running systemd containers!'
+fi
