@@ -22,7 +22,7 @@ If you just want to run a single, short-lived, process in a container, you shoul
 
 ## Configuring the Docker host
 
-Unless your Docker host is running a recent Linux distribution, you'll need to configure the host by running the script [`systemd-container-host-config`](https://github.com/solita/docker-systemd/master/systemd-container-host-config). It will create the `systemd` cgroup, which must be present on the host when running `systemd` in a container. If you're worried about what the script might do, go ahead and [read it](https://github.com/solita/docker-systemd/master/systemd-container-host-config), it's short and not the most complicated thing in the world.
+Unless your Docker host is running a recent Linux distribution, you'll need to configure the host by running the script [`systemd-container-host-config`](https://raw.githubusercontent.com/solita/docker-systemd/master/systemd-container-host-config). It will create the `systemd` cgroup, which must be present on the host when running `systemd` in a container. If you're worried about what the script might do, go ahead and [read it](https://raw.githubusercontent.com/solita/docker-systemd/master/systemd-container-host-config), it's short and not the most complicated thing in the world.
 
     curl -O https://raw.githubusercontent.com/solita/docker-systemd/master/systemd-container-host-config
     sh systemd-container-host-config
