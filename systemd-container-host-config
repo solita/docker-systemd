@@ -5,7 +5,7 @@ set -e
 if [ -n "${DOCKER_MACHINE_NAME:+1}" ]; then
   echo "Docker Machine detected, copying the script over to machine '$DOCKER_MACHINE_NAME' and running there."
   docker-machine scp "$0" "$DOCKER_MACHINE_NAME:/tmp/systemd-container-host-config"
-  docker-machine ssh "$DOCKER_MACHINE_NAME" '/tmp/systemd-container-host-config'
+  docker-machine ssh "$DOCKER_MACHINE_NAME" "sh '/tmp/systemd-container-host-config'"
 else
   if mount | grep /sys/fs/cgroup/systemd >/dev/null 2>&1; then
     echo 'The systemd cgroup is already mounted at /sys/fs/cgroup/systemd.'
