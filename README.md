@@ -30,16 +30,6 @@ Note that the script will only make the changes persistent on `boot2docker` host
 
 **[Docker for Mac and Docker for Windows](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/) are currently unsupported.**
 
-## Configuring the Docker host
-
-Unless your Docker host is running a recent Linux distribution, you'll need to configure the host by running the script [`systemd-container-host-config`](https://github.com/solita/docker-systemd/master/systemd-container-host-config). It will create the `systemd` cgroup, which must be present on the host when running `systemd` in a container. If you're worried about what the script might do, go ahead and [read it](https://github.com/solita/docker-systemd/master/systemd-container-host-config), it's short and not the most complicated thing in the world.
-
-    curl https://github.com/solita/docker-systemd/master/systemd-container-host-config | sh
-
-Note that the script will only make the changes persistent on `boot2docker` hosts. On other hosts the changes will be lost on reboot.
-
-**[Docker for Mac and Docker for Windows](https://blog.docker.com/2016/03/docker-for-mac-windows-beta/) are currently unsupported.**
-
 ## Running
 
 You need to add a couple of flags to the `docker run` command to make `systemd` play nice with Docker:
