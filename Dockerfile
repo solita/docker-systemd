@@ -13,5 +13,4 @@ RUN find /etc/systemd/system \
 
 RUN systemctl set-default multi-user.target
 
-VOLUME ["/sys/fs/cgroup"]
 CMD ["/sbin/init"]
