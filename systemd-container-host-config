@@ -3,6 +3,7 @@
 set -e
 
 installed_docker_version="$(docker version -f "{{.Client.Version}}")"
+uname_result="$(uname)"
 
 function require_docker {
   local required_docker_version="$1"
@@ -12,13 +13,29 @@ function require_docker {
     echo >&2
     echo 'Note that on Windows / OS X you need to install **Docker Toolbox**, (NOT Docker' >&2
     echo 'for Windows or Docker for Mac).' >&2
+    echo >&2
+    exit 1
+  fi
+
+  if [[ $uname_result != Linux && -z ${DOCKER_MACHINE_NAME:-} ]]; then
+    echo 'You seem to be using a non-Linux platform, but your shell is not configured to' >&2
+    echo 'connect to a Docker Machine. Please configure your shell with the following' >&2
+    echo 'command:' >&2
+    echo >&2
+    echo '    eval "$(docker-machine env default)"' >&2
+    echo >&2
+    echo 'If the machine named "default" does not exists, follow the instructions on this' >&2
+    echo 'page to create it:' >&2
+    echo >&2
+    echo '    https://docs.docker.com/machine/get-started/#create-a-machine' >&2
+    echo >&2
     exit 1
   fi
 }
 
 if [[ "$0" == "$BASH_SOURCE" ]]; then
   require_docker '1.11.1'
-  if [ -n "${DOCKER_MACHINE_NAME:+1}" ]; then
+  if [[ -n ${DOCKER_MACHINE_NAME:+1} ]]; then
     echo "Docker Machine detected, copying the script over to machine '$DOCKER_MACHINE_NAME' and running there."
     docker-machine scp "$0" "$DOCKER_MACHINE_NAME:/tmp/systemd-container-host-config"
     docker-machine ssh "$DOCKER_MACHINE_NAME" "sh '/tmp/systemd-container-host-config'"
