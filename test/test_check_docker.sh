@@ -1,4 +1,6 @@
 #!/bin/bash
+export TEST=1
+
 script_dir="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
 . "$script_dir/assert.sh"
 . "$script_dir/../systemd-container-host-config"

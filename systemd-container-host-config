@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 
 installed_docker_version="$(docker version -f "{{.Client.Version}}")"
 uname_result="$(uname)"
 
-function require_docker {
+require_docker () {
   local required_docker_version="$1"
   if ! printf "$required_docker_version\n$installed_docker_version\n" | sort -cnt . -k 1,1 -k 2,2 -k 3,3 2>/dev/null; then
     echo "This script requires Docker version $required_docker_version or newer, but your installed version" >&2
@@ -17,7 +17,7 @@ function require_docker {
     exit 1
   fi
 
-  if [[ $uname_result != Linux && -z ${DOCKER_MACHINE_NAME:-} ]]; then
+  if [ "$uname_result" != Linux ] && [ -z "${DOCKER_MACHINE_NAME:-}" ]; then
     echo 'You seem to be using a non-Linux platform, but your shell is not configured to' >&2
     echo 'connect to a Docker Machine. Please configure your shell with the following' >&2
     echo 'command:' >&2
@@ -33,12 +33,12 @@ function require_docker {
   fi
 }
 
-if [[ "$0" == "$BASH_SOURCE" ]]; then
+if [ -z "${TEST+1}" ]; then
   require_docker '1.11.1'
-  if [[ -n ${DOCKER_MACHINE_NAME:+1} ]]; then
+  if [ -n "${DOCKER_MACHINE_NAME+1}" ]; then
     echo "Docker Machine detected, copying the script over to machine '$DOCKER_MACHINE_NAME' and running there."
     docker-machine scp "$0" "$DOCKER_MACHINE_NAME:/tmp/systemd-container-host-config"
-    docker-machine ssh "$DOCKER_MACHINE_NAME" "sh '/tmp/systemd-container-host-config'"
+    docker-machine ssh "$DOCKER_MACHINE_NAME" 'chmod a+x /tmp/systemd-container-host-config && /tmp/systemd-container-host-config'
   else
     if mount | grep /sys/fs/cgroup/systemd >/dev/null 2>&1; then
       echo 'The systemd cgroup is already mounted at /sys/fs/cgroup/systemd.'
