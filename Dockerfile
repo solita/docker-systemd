@@ -13,4 +13,6 @@ RUN find /etc/systemd/system \
 
 RUN systemctl set-default multi-user.target
 
+COPY setup /sbin/
+
 CMD ["/sbin/init"]
