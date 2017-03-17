@@ -47,11 +47,10 @@ allowed by Docker's default seccomp profile:
 
     --security-opt seccomp=unconfined
 
-CentOS's `systemd` expects `/run` and `/run/lock` to be `tmpfs` file systems,
-but it can't mount them itself in an unprivileged container:
+CentOS's `systemd` expects `/run` to be a `tmpfs` file system, but it can't
+mount the file system itself in an unprivileged container:
 
     --tmpfs /run
-    --tmpfs /run/lock
 
 `systemd` needs read-only access to the kernel's cgroup hierarchies:
 
@@ -68,7 +67,7 @@ This image is useless as it's only meant to serve as a base for your own
 images, but you can still create a container from it. First set up your Docker
 host as described in Setup above. Then run the following command:
 
-    docker run -d --name systemd --security-opt seccomp=unconfined --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t solita/centos-systemd
+    docker run -d --name systemd --security-opt seccomp=unconfined --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t solita/centos-systemd
 
 Check the logs to see if `systemd` started correctly:
 
@@ -144,99 +143,95 @@ And in another shut down `systemd`:
 
 The journalctl logs should look like this on a clean(ish) shutdown:
 
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Received SIGRTMIN+3.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Timers.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Timers.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Multi-User System.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Multi-User System.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped Daily Cleanup of Temporary Directories.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Daily Cleanup of Temporary Directories.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Permit User Sessions...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped Permit User Sessions.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Basic System.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Basic System.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Paths.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Paths.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Sockets.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Sockets.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target System Initialization.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping System Initialization.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Swap.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Swap.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped Create Volatile Files and Directories.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Create Volatile Files and Directories...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Reached target Shutdown.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Starting Shutdown.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Local File Systems.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Local File Systems.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/kcore...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /sys/firmware...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/sysrq-trigger...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /etc/hostname...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/bus...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/timer_stats...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/sched_debug...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /etc/resolv.conf...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/asound...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/timer_list...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /etc/hosts...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/fs...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /run/lock...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting POSIX Message Queue File System...
-    Mar 17 15:48:22 136c97f88746 umount[35]: umount: /sys/firmware: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[36]: umount: /proc/sysrq-trigger: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[40]: umount: /proc/sched_debug: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[34]: umount: /proc/kcore: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[37]: umount: /etc/hostname: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[41]: umount: /etc/resolv.conf: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[38]: umount: /proc/bus: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[39]: umount: /proc/timer_stats: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Unmounting /proc/irq...
-    Mar 17 15:48:22 136c97f88746 umount[42]: umount: /proc/asound: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[45]: umount: /proc/fs: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopped target Slices.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Stopping Slices.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-kcore.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/kcore.
-    Mar 17 15:48:22 136c97f88746 umount[43]: umount: /proc/timer_list: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 systemd[1]: sys-firmware.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /sys/firmware.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-sysrq\x2dtrigger.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/sysrq-trigger.
-    Mar 17 15:48:22 136c97f88746 umount[44]: umount: /etc/hosts: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 umount[48]: umount: /proc/irq: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 systemd[1]: etc-hostname.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /etc/hostname.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-bus.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/bus.
-    Mar 17 15:48:22 136c97f88746 umount[46]: umount: /run/lock: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-sched_debug.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 umount[47]: umount: /dev/mqueue: must be superuser to umount
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/sched_debug.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: etc-resolv.conf.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /etc/resolv.conf.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-timer_stats.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/timer_stats.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-asound.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/asound.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-timer_list.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/timer_list.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: etc-hosts.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /etc/hosts.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-fs.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/fs.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: run-lock.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /run/lock.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: dev-mqueue.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting POSIX Message Queue File System.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: proc-irq.mount mount process exited, code=exited status=32
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Failed unmounting /proc/irq.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Reached target Unmount All Filesystems.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Starting Unmount All Filesystems.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Reached target Final Step.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Starting Final Step.
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Starting Halt...
-    Mar 17 15:48:22 136c97f88746 systemd[1]: Shutting down.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Received SIGRTMIN+3.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Multi-User System.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Multi-User System.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Permit User Sessions...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Timers.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Timers.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped Daily Cleanup of Temporary Directories.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Daily Cleanup of Temporary Directories.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped Permit User Sessions.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Basic System.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Basic System.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Sockets.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Sockets.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Slices.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Slices.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Paths.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Paths.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target System Initialization.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping System Initialization.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped Create Volatile Files and Directories.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Create Volatile Files and Directories...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Reached target Shutdown.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Starting Shutdown.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Swap.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Swap.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopped target Local File Systems.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Stopping Local File Systems.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/fs...
+    Mar 17 15:54:23 c8c99c8a80ea umount[29]: umount: /proc/irq: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/irq...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /etc/hostname...
+    Mar 17 15:54:23 c8c99c8a80ea umount[30]: umount: /etc/hostname: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/kcore...
+    Mar 17 15:54:23 c8c99c8a80ea umount[28]: umount: /proc/fs: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea umount[34]: umount: /proc/bus: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea umount[31]: umount: /proc/kcore: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea umount[32]: umount: /proc/sched_debug: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/sched_debug...
+    Mar 17 15:54:23 c8c99c8a80ea umount[35]: umount: /sys/firmware: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /etc/resolv.conf...
+    Mar 17 15:54:23 c8c99c8a80ea umount[39]: umount: /proc/sysrq-trigger: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/bus...
+    Mar 17 15:54:23 c8c99c8a80ea umount[38]: umount: /dev/mqueue: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /sys/firmware...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /etc/hosts...
+    Mar 17 15:54:23 c8c99c8a80ea umount[33]: umount: /etc/resolv.conf: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/timer_stats...
+    Mar 17 15:54:23 c8c99c8a80ea umount[40]: umount: /proc/asound: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea umount[36]: umount: /etc/hosts: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting POSIX Message Queue File System...
+    Mar 17 15:54:23 c8c99c8a80ea umount[37]: umount: /proc/timer_stats: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/sysrq-trigger...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/asound...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Unmounting /proc/timer_list...
+    Mar 17 15:54:23 c8c99c8a80ea umount[41]: umount: /proc/timer_list: must be superuser to umount
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-irq.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/irq.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-fs.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/fs.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: etc-hostname.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /etc/hostname.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-kcore.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/kcore.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-sched_debug.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/sched_debug.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: etc-resolv.conf.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /etc/resolv.conf.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-bus.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/bus.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: sys-firmware.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /sys/firmware.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: etc-hosts.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /etc/hosts.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-timer_stats.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/timer_stats.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: dev-mqueue.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting POSIX Message Queue File System.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-sysrq\x2dtrigger.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/sysrq-trigger.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-asound.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/asound.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: proc-timer_list.mount mount process exited, code=exited status=32
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Failed unmounting /proc/timer_list.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Reached target Unmount All Filesystems.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Starting Unmount All Filesystems.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Reached target Final Step.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Starting Final Step.
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Starting Halt...
+    Mar 17 15:54:23 c8c99c8a80ea systemd[1]: Shutting down.
 
 ## Contributors
 
