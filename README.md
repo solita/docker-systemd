@@ -154,6 +154,11 @@ the wrong order. In this case the output of `docker logs` looks like this:
 If this happens to you, `docker kill` the container (it won't listen for the
 shutdown signal) and start it again with `docker start`. Better luck next time!
 
+## Contributors
+
+* [Timo Mihaljov](https://github.com/noidi)
+* [Andrew Wason](https://github.com/rectalogic)
+
 ## License
 
 Copyright © 2016-2017 [Solita](http://www.solita.fi). Licensed under [the MIT license](https://github.com/solita/docker-systemd/blob/master/LICENSE).
