@@ -156,4 +156,4 @@ shutdown signal) and start it again with `docker start`. Better luck next time!
 
 ## License
 
-Copyright © 2016 [Solita](http://www.solita.fi). Licensed under [the MIT license](https://github.com/solita/docker-systemd/blob/master/LICENSE).
+Copyright © 2016-2017 [Solita](http://www.solita.fi). Licensed under [the MIT license](https://github.com/solita/docker-systemd/blob/master/LICENSE).
