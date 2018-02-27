@@ -237,7 +237,8 @@ The journalctl logs should look like this on a clean(ish) shutdown:
 
 * [Timo Mihaljov](https://github.com/noidi)
 * [Andrew Wason](https://github.com/rectalogic)
+* [Damian ONeill](https://github.com/damianoneill)
 
 ## License
 
-Copyright © 2016-2017 [Solita](http://www.solita.fi). Licensed under [the MIT license](https://github.com/solita/docker-systemd/blob/master/LICENSE).
+Copyright © 2016-2018 [Solita](http://www.solita.fi). Licensed under [the MIT license](https://github.com/solita/docker-systemd/blob/master/LICENSE).
