@@ -18,6 +18,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN systemctl set-default multi-user.target
+RUN systemctl mask dev-hugepages.mount sys-fs-fuse-connections.mount
 
 COPY setup /sbin/
 
