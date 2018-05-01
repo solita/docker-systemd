@@ -8,7 +8,8 @@ running it in production!**
 
 ## Supported tags
 
-* `latest`, `16.04`
+* `18.04`, `bionic`
+* `16.04`, `xenial`, `latest`
 
 ## But why?
 
