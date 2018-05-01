@@ -238,6 +238,7 @@ The journalctl logs should look like this on a clean(ish) shutdown:
 * [Timo Mihaljov](https://github.com/noidi)
 * [Andrew Wason](https://github.com/rectalogic)
 * [Damian ONeill](https://github.com/damianoneill)
+* [Jeroen Vermeulen](https://github.com/jeroenvermeulen)
 
 ## License
 
