@@ -1,3 +1,11 @@
+# PROJECT UNMAINTAINED
+
+**This image is no longer used nor maintained by its original developer. If you
+want to continue its development, you may fork the project in accordance with
+[its license](LICENSE).**
+
+-------------------------------------------------------------------------------
+
 # solita/centos-systemd
 
 A Docker image based on `centos` that runs `systemd` with a minimal set of
